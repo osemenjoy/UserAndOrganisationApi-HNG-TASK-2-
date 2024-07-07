@@ -212,23 +212,31 @@ class GetAnOrganisationView(generics.GenericAPIView):
 
     def get(self, request, orgId):
         try:
-            organisation = Organisation.objects.get(orgId=orgId)
-            serializer = OrganisationSerializer(organisation)
-            return Response(
-                {
-                "status": "success",
-                "message": "Organisation Found",
-                "data": serializer.data
-                }, status= status.HTTP_200_OK
-            )           
+            organisation = get_object_or_404(Organisation, orgId=orgId)
+            
+            # Check if the logged-in user is a member of the organisation
+            if request.user in organisation.users.all():
+                serializer = OrganisationSerializer(organisation)
+                return Response({
+                    "status": "success",
+                    "message": "Organisation retrieved successfully",
+                    "data": serializer.data
+                }, status=status.HTTP_200_OK)
+            else:
+                return Response({
+                    "status": "Forbidden",
+                    "message": "You do not have access to this organisation",
+                    "statusCode": status.HTTP_403_FORBIDDEN
+                }, status=status.HTTP_403_FORBIDDEN)
         except Exception:
             return Response(
                 {
                     "status": "Bad Request",
                     "message": "Client error",
-                    "statusCode": 400
+                    "statusCode": status.HTTP_400_BAD_REQUEST
                 }, status= status.HTTP_400_BAD_REQUEST
-                )               
+                )      
+               
 
 class AddUserToOrganisation(generics.GenericAPIView):
     serializer_class = OrganisationSerializer

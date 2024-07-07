@@ -67,8 +67,8 @@ SIMPLE_JWT = {
     'AUDIENCE': None,
     'ISSUER': None,
     'AUTH_HEADER_TYPES': ('Bearer',),
-    'USER_ID_FIELD': 'id',
-    'USER_ID_CLAIM': 'user_id',
+    'USER_ID_FIELD': 'userId',
+    'USER_ID_CLAIM': 'userId',
 }
 
 
@@ -150,6 +150,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 
 # Default primary key field type
