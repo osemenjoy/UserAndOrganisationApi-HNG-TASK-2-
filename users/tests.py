@@ -7,6 +7,7 @@ class AuthTests(APITestCase):
     def test_register_user_successfully(self):
         url = reverse('register')
         data = {
+            'username': 'john@example.com',
             'firstName': 'John',
             'lastName': 'Doe',
             'email': 'john@example.com',
@@ -21,6 +22,7 @@ class AuthTests(APITestCase):
 
     def test_login_user_successfully(self):
         user = CustomUser.objects.create_user(
+            username = 'john@example.com',
             firstName='John',
             lastName='Doe',
             email='john@example.com',
@@ -40,6 +42,7 @@ class AuthTests(APITestCase):
 
     def test_register_duplicate_email(self):
         CustomUser.objects.create_user(
+            username = 'john@example.com',
             firstName='John',
             lastName='Doe',
             email='john@example.com',
@@ -54,4 +57,5 @@ class AuthTests(APITestCase):
             'phone': '1234567890'
         }
         response = self.client.post(url, data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_422_UNPROCESSABLE_ENTITY)
+        
