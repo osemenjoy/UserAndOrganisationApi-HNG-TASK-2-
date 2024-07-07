@@ -38,11 +38,13 @@ class RegisterView(generics.CreateAPIView):
                 }, status=status.HTTP_201_CREATED
                 )
                 return response_data
+
             except serializers.ValidationError as e:
                 errors = [{"field": k, "message": v} for k, v in e.detail.items()]   
                 return Response({
                     "errors": errors
-                }, status=status.HTTP_422_UNPROCESSABLE_ENTITY)       
+                }, status=status.HTTP_422_UNPROCESSABLE_ENTITY)  
+
             except Exception as e:
                 return Response(
                     {
@@ -85,14 +87,16 @@ class LoginView(generics.GenericAPIView):
                         "phone": user.phone,
                     }
                 }
-            }
+            }, status=status.HTTP_200_OK
             )
             return response_data
+
         except serializers.ValidationError as e:
             errors = [{"field": k, "message": v} for k, v in e.detail.items()]   
             return Response({
                 "errors": errors
-            }, status=status.HTTP_422_UNPROCESSABLE_ENTITY)            
+            }, status=status.HTTP_422_UNPROCESSABLE_ENTITY)   
+
         except Exception as e:
             return Response(
                 {
@@ -119,7 +123,7 @@ class GetUserView(generics.GenericAPIView):
                 return Response(
                     {
                         "status": "success",
-                        "message": "<message>",
+                        "message": "User Found",
                         "data": serializer.data
                     }, status=status.HTTP_200_OK
                 )
@@ -134,7 +138,7 @@ class GetUserView(generics.GenericAPIView):
             return Response(
                 {
                     "status": "Bad request",
-                    "message": "Client error: ",
+                    "message": "Client error",
                     "statusCode": status.HTTP_400_BAD_REQUEST
                 }, status=status.HTTP_400_BAD_REQUEST
             )
@@ -154,14 +158,16 @@ class GetOrganisationView(generics.ListCreateAPIView):
                     "name": organisation.name,
                     "description": organisation.description,
                 })
+
             if request.user in organisation.users.all():
                 return Response(
                     {
                         "status": "success",
-                        "message": "<message>",
+                        "message": "Organisations retrieved successfully",
                         "data": data
                     }, status=status.HTTP_200_OK
                 )
+
         except Exception as e:
             return Response(
             {
@@ -190,13 +196,13 @@ class GetOrganisationView(generics.ListCreateAPIView):
                     }
                 }, status=status.HTTP_201_CREATED
         )
+
         except Exception as e:
             return Response(
                 {
                     "status": "Bad Request",
                     "message": "Client error",
                     "statusCode": status.HTTP_400_BAD_REQUEST
-
                 }, status=status.HTTP_400_BAD_REQUEST
             )
 
@@ -211,7 +217,7 @@ class GetAnOrganisationView(generics.GenericAPIView):
             return Response(
                 {
                 "status": "success",
-                "message": "<message>",
+                "message": "Organisation Found",
                 "data": serializer.data
                 }, status= status.HTTP_200_OK
             )           
@@ -240,6 +246,13 @@ class AddUserToOrganisation(generics.GenericAPIView):
                         "message": "User Added to organisation Successfully"
                     }, status= status.HTTP_200_OK
                 )
+            else:
+                return Response(
+                    {
+                        "status": "error", 
+                        "message": "You do not have permission to add user"
+                    }, status= status.HTTP_403_FORBIDDEN
+                )                
         except:
             return Response(
                 {
