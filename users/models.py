@@ -9,6 +9,14 @@ class CustomUser(AbstractUser):
     email = models.EmailField(max_length=50, unique=True, null=False)
     phone = models.CharField(max_length=20)
 
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['firstName', 'lastName'] 
+
+    def save(self, *args, **kwargs):
+        if not self.pk and not self.username:
+            self.username = self.email
+        super().save(*args, **kwargs)       
+
 class Organisation(models.Model):
     orgId = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     name = models.CharField(max_length=255, null=False)

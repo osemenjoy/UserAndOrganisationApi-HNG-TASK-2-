@@ -35,7 +35,7 @@ class RegisterView(generics.CreateAPIView):
                             "phone": user.phone,
                         }
                     }
-                }
+                }, status=status.HTTP_201_CREATED
                 )
                 return response_data
             except serializers.ValidationError as e:
@@ -47,9 +47,9 @@ class RegisterView(generics.CreateAPIView):
                 return Response(
                     {
                         "status": "Bad request",
-                        "message": f"Registration unsuccessful as {e}",
+                        "message": "Registration unsuccessful",
                         "statusCode": status.HTTP_400_BAD_REQUEST
-                    }
+                    }, status=status.HTTP_400_BAD_REQUEST
                 )
 
 
@@ -97,14 +97,11 @@ class LoginView(generics.GenericAPIView):
             return Response(
                 {
                     "status": "Bad request",
-                    "message": f"Authentication Failed becaiuse {e} ",
+                    "message": "Authentication Failed",
                     "statusCode": status.HTTP_401_UNAUTHORIZED
-                }
+                }, status= status.HTTP_401_UNAUTHORIZED
             )
 
-class GetUserView(generics.GenericAPIView):
-    serializer_class = RegistrationSerializer
-    permission_classes = [permissions.IsAuthenticated]
 
 class GetUserView(generics.GenericAPIView):
     serializer_class = RegistrationSerializer
@@ -126,6 +123,13 @@ class GetUserView(generics.GenericAPIView):
                         "data": serializer.data
                     }, status=status.HTTP_200_OK
                 )
+            else:
+                 return Response(
+                    {
+                        "status": "Error",
+                        "message": "You do not have permission to view user data",
+                    }, status=status.HTTP_403_FORBIDDEN
+                )               
         except Exception as e:
             return Response(
                 {
@@ -138,6 +142,7 @@ class GetUserView(generics.GenericAPIView):
 class GetOrganisationView(generics.ListCreateAPIView):
     serializer_class = OrganisationSerializer
     permission_classes = [permissions.IsAuthenticated]
+
     def get(self, request):
         try:
             organisations = request.user.organisations.all()
@@ -155,13 +160,13 @@ class GetOrganisationView(generics.ListCreateAPIView):
                         "status": "success",
                         "message": "<message>",
                         "data": data
-                    }
+                    }, status=status.HTTP_200_OK
                 )
         except Exception as e:
             return Response(
             {
                 "status": "Bad request",
-                "message": f"Client error as {e}",
+                "message": "Client error",
                 "statusCode": status.HTTP_400_BAD_REQUEST
             }, status=status.HTTP_400_BAD_REQUEST
             )
@@ -232,7 +237,7 @@ class AddUserToOrganisation(generics.GenericAPIView):
                 return Response(
                     {
                         "status": "success", 
-                        "message": "User Added Successfully"
+                        "message": "User Added to organisation Successfully"
                     }, status= status.HTTP_200_OK
                 )
         except:
