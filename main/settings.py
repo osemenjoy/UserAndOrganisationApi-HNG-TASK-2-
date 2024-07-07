@@ -29,7 +29,7 @@ SECRET_KEY = config("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG")
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "bookapi-pb21.onrender.com"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "userandorganisationapi-hng-task-2.onrender.com"]
 
 
 # Application definition
