@@ -15,6 +15,10 @@ from datetime import timedelta
 from decouple import config
 import os
 import dj_database_url
+# settings.py
+from dotenv import load_dotenv
+load_dotenv()
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -29,7 +33,8 @@ SECRET_KEY = config("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG")
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "userandorganisationapi-hng-task-2.onrender.com"]
+
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -109,8 +114,11 @@ WSGI_APPLICATION = 'main.wsgi.application'
 
 
 DATABASES = {
-    'default': dj_database_url.parse(config('DATABASE_URL'))
+    'default': dj_database_url.parse(config('POSTGRES_URL'))
 }
+
+
+
 
 
 
@@ -158,3 +166,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL ='users.CustomUser'
+
+STATICFILES_DIRS = os.path.join(BASE_DIR, 'static'),
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build', 'static')
