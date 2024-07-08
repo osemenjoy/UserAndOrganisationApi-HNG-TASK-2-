@@ -14,4 +14,4 @@
     "routes": [
       { "src": "/(.*)", "dest": "main/wsgi.py" }
     ]
-  }
+}
