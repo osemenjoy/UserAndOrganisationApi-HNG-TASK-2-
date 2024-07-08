@@ -1,17 +1,17 @@
-
 {
-    "builds": [{
+    "version": 2,
+    "builds": [
+      {
+        "src": "manage.py",
+        "use": "@vercel/python",
+        "config": { "maxLambdaSize": "15mb" }
+      },
+      {
         "src": "main/wsgi.py",
-        "use": "@Vercel/python",
-        "config": {
-            "maxLambdaSize": "15mb",
-            "installCommand": "pip install -r requirements.txt"
-        }
-    }],
+        "use": "@vercel/python"
+      }
+    ],
     "routes": [
-        {
-            "src": "/(.*)",
-            "dest": "main/wsgi.py"
-        }
+      { "src": "/(.*)", "dest": "main/wsgi.py" }
     ]
-}
+  }
